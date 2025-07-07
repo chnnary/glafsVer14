@@ -7,12 +7,17 @@ import LoginPage from './pages//LoginPage';
 import HomePage from './pages/HomePage';
 import SettingsPage from './pages/SettingsPage';
 import LogsPage from './pages/LogsPage';
-import RegisterPage from './pages/RegisterPage'; 
+import RegisterPage from './pages/RegisterPage';
 import Testing from './pages/Testing';
 import OnBoardingPage from './pages/onBoardingPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import OTPPage from './pages/otpPage';
+import ChangeEmailPage from './pages/ChangeEmailPage';
+import ChangePassword from './pages/ChangePassword';
+import { TokenProvider } from './TokenContext';
+import CheckEmailPage from './pages/CheckEmailPage';
+import LatestPressureLogPage from './pages/test';
 // import ValveTimer from './pages/ValveTimer';
 
 
@@ -20,13 +25,14 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 function HomeScreen() {
-    return (
+  return (
+    <TokenProvider>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
-  
+
             if (route.name === 'Home') {
               iconName = focused ? 'home' : 'home-outline';
             } else if (route.name === 'Settings') {
@@ -34,7 +40,7 @@ function HomeScreen() {
             } else if (route.name === 'Logs') {
               iconName = focused ? 'notifications' : 'notifications-outline';
             }
-  
+
             return <Ionicons name={iconName} size={size} color={color} />;
           },
           tabBarActiveTintColor: '#0c2d48',
@@ -45,17 +51,19 @@ function HomeScreen() {
         <Tab.Screen name="Logs" component={LogsPage} />
         <Tab.Screen name="Settings" component={SettingsPage} />
       </Tab.Navigator>
-    );
+    </TokenProvider>
+  );
 }
 function HomeScreen2() {
-    return (
+  return (
+    <TokenProvider>
       <Tab.Navigator
         initialRouteName="Settings"
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
-  
+
             if (route.name === 'Home') {
               iconName = focused ? 'home' : 'home-outline';
             } else if (route.name === 'Settings') {
@@ -63,7 +71,7 @@ function HomeScreen2() {
             } else if (route.name === 'Logs') {
               iconName = focused ? 'notifications' : 'notifications-outline';
             }
-  
+
             return <Ionicons name={iconName} size={size} color={color} />;
           },
           tabBarActiveTintColor: '#0c2d48',
@@ -74,31 +82,38 @@ function HomeScreen2() {
         <Tab.Screen name="Logs" component={LogsPage} />
         <Tab.Screen name="Settings" component={SettingsPage} />
       </Tab.Navigator>
-    );
+    </TokenProvider>
+  );
 }
 
 function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator 
-        initialRouteName="onBoardingPage"
-        screenOptions={({route}) => ({
+    <TokenProvider>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="onBoardingPage"
+          screenOptions={({ route }) => ({
             headerShown: false,
-        })}>
-        <Stack.Screen name="LoginPage" component={LoginPage} />
-        <Stack.Screen name="HomePage" component={HomePage} />
-        <Stack.Screen name="RegisterPage" component={RegisterPage} />
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
-        <Stack.Screen name="HomeScreen2" component={HomeScreen2} />
-        <Stack.Screen name='Testing' component={Testing} />
-        <Stack.Screen name='onBoardingPage' component={OnBoardingPage} />
-        <Stack.Screen name='LogsPage' component={LogsPage} />
-        <Stack.Screen name='ForgotPassword' component={ForgotPasswordPage} />
-        <Stack.Screen name='ChangePassword' component={ChangePasswordPage} />
-        <Stack.Screen name='OTP' component={OTPPage} />
-        {/* <Stack.Screen name='ValveTimer' component={ValveTimer} /> */}
-      </Stack.Navigator>
-    </NavigationContainer>
+          })}>
+          <Stack.Screen name="LoginPage" component={LoginPage} />
+          <Stack.Screen name="HomePage" component={HomePage} />
+          <Stack.Screen name="RegisterPage" component={RegisterPage} />
+          <Stack.Screen name="HomeScreen" component={HomeScreen} />
+          <Stack.Screen name="HomeScreen2" component={HomeScreen2} />
+          <Stack.Screen name='Testing' component={Testing} />
+          <Stack.Screen name='onBoardingPage' component={OnBoardingPage} />
+          <Stack.Screen name='LogsPage' component={LogsPage} />
+          <Stack.Screen name='ForgotPassword' component={ForgotPasswordPage} />
+          <Stack.Screen name='ChangePassword' component={ChangePasswordPage} />
+          <Stack.Screen name='ChangeEmailPage' component={ChangeEmailPage} />
+          <Stack.Screen name='ChangePasswordPage' component={ChangePassword} />
+          <Stack.Screen name='CheckEmailPage' component={CheckEmailPage} />
+          <Stack.Screen name='Logs' component={LatestPressureLogPage} />
+          {/* <Stack.Screen name='OTP' component={OTPPage} /> */}
+          {/* <Stack.Screen name='ValveTimer' component={ValveTimer} /> */}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </TokenProvider>
   );
 }
 

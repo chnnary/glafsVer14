@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
+import { API_IP } from '@env';
 
 const OTPPage = ({ navigation, route }) => {
   const { control, handleSubmit } = useForm();
@@ -9,7 +10,7 @@ const OTPPage = ({ navigation, route }) => {
 
   const onSubmit = async (data) => {
     try {
-      await axios.post('http://192.168.19.245:5003/verify-otp', { email, otp: data.otp });
+      await axios.post(`${API_IP}/verify-otp`, { email, otp: data.otp });
       navigation.navigate('ChangePassword', { email });
     } catch (error) {
       console.error(error);

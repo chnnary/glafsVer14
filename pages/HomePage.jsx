@@ -1,15 +1,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-//import * as React from 'react';
-import React, { useContext } from 'react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Switch } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-const { 
-  ImageBackground, 
-  View, 
+import { API_IP } from '@env';
+
+const {
+  ImageBackground,
+  View,
   Image,
   Text,
   ScrollView,
@@ -17,127 +17,149 @@ const {
   TextInput,
   TouchableOpacity,
   Alert,
-
 } = require('react-native');
 
 function HomePage() {
   const [userData, setUserData] = useState('');
-  const BASE_URL = 'http://127.0.0.1:3000/servo/toggle'; // Replace with your Raspberry Pi's IP address
-  const [isEnabled, setIsEnabled] = useState(false);
-  
-  async function getData(){
-    const token = await AsyncStorage.getItem('token');
-    console.log(token);
-    axios
-    .post('http://192.168.19.245:5003/userdata', {token: token})
-    .then (res => {
-      console.log(res.data);
-      setUserData(res.data.data);
-    });
-  }
-  const toggleSwitch = async () => {
-    const newState = !isEnabled;
-    setIsEnabled(newState);
-    try {
-        const response = await axios.post(`${BASE_URL}/${newState ? 'on' : 'off'}`);
-        Alert.alert(response.data);
-    } catch (error) {
-        console.error(error);
-        Alert.alert('Error', 'Could not set servo angle.');
+  const [isServoOn, setIsServoOn] = useState(false);
+  const [pressure, setPressure] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Function to get the current time of day
+  const getGreetingTime = () => {
+    const currentHour = new Date().getHours();
+
+    if (currentHour >= 0 && currentHour < 12) {
+      return 'morning';
+    } else if (currentHour >= 12 && currentHour < 18) {
+      return 'afternoon';
+    } else if (currentHour >= 18 && currentHour < 22) {
+      return 'evening';
+    } else {
+      return 'morning';
     }
   };
 
-  useEffect(() =>{
+  const [timeOfDay, setTimeOfDay] = useState(getGreetingTime());
+
+  async function getData() {
+    const token = await AsyncStorage.getItem('token');
+    console.log(token);
+    axios
+      .post(`${API_IP}/userdata`, { token: token })
+      .then(res => {
+        console.log(res.data);
+        setUserData(res.data.data);
+      });
+  }
+
+  const handleToggle = async (value) => {
+    setIsServoOn(value);
+
+    try {
+      const response = await axios.post(`${API_IP}/servo`, {
+        isOn: value,
+      });
+
+      console.log('Servo response:', response.data);
+      console.log(`Servo turned ${value ? 'on' : 'off'}`);
+    } catch (error) {
+      console.error('Error details:', error.response ? error.response.data : error.message);
+      console.error('Error', 'Failed to control the servo');
+    }
+  };
+
+  useEffect(() => {
     getData();
   }, []);
 
-  return (
-    <ImageBackground
-    source={
-      require('../images/backgroundHome.png')}
-      style ={styles.backgroundContainer}>
-        <SafeAreaView>
-          {/* Header */}
-          <View style={styles.header}>
-            <View style={styles.logoHeader}>
-              <Image 
-              style = {styles.logo}
-              source={
-                require('../images/logo.png')}>
-              </Image>
-              <View>
-                <Text 
-                style = {styles.headerText}>
-                  GLAFS
-                </Text>
-                <Text 
-                style = {styles.headerText2}>
-                  Gas Leak and Fire Detection System
-                </Text>
-              </View>
-            </View>
-          </View>
-          {/* Greeting */}
-          <View style = {styles.body}>
-            <View style = {styles.greeting}>
-              <Text 
-              style = {styles.greetingText1}>
-                Good morning, 
-              </Text>
-              <Text 
-              style = {styles.greetingText2}>
-                user!
-              </Text>
-            </View>
-            <View style = {styles.weatherView}>
-              <Image
-              style = {styles.weatherLogo}
-              source = {require('../images/Weather_Sunny.png')}/>
-            </View>
-            <View style = {styles.menuBar}> 
-              <View style = {styles.section1}>
-                <View style = {styles.gasPercentage}>
-                  <Image
-                  style = {styles.gasIcon}
-                  source={
-                    require('../images/GasIcon.png')}/>
-                  <Text style = {styles.gasPercentageText1}>Gas Level</Text>
-                  <Text style = {styles.gasPercentageText1}>Percentage</Text>
-                  <Text style = {styles.gasPercentageText2}>80%</Text>
-                </View>
-                <View style = {styles.valveOptions}>
-                    <View style = {styles.valveStatus}>
-                    <Switch
-                      trackColor={{ false: "#767577", true: "#81b0ff" }}
-                      thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-                      ios_backgroundColor="#3e3e3e"
-                      onValueChange={toggleSwitch}
-                      style={styles.valveStatusSwitch}
-                      value={isEnabled}/>
-                      <Text style = {styles.valveStatusText}>Valve</Text>
-                      <Text style = {styles.valveStatusText}>Status</Text>
-                    </View>
-                    <TouchableOpacity onPress={() => {}}>
-                      <View style = {styles.valveTimer}>
-                        <Ionicons 
-                          name="time-outline" 
-                          style = {styles.valveTimerIcon} 
-                          color="black" />
-                        <Text style = {styles.valveTimerText}>Valve</Text>
-                        <Text style = {styles.valveTimerText}>Timer</Text>
-                      
-                      </View>
-                    </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </View>
-        </SafeAreaView>
-        
+  useEffect(() => {
+    // Fetch the latest pressure data
+    const fetchPressure = async () => {
+      try {
+        const response = await axios.get(`${API_IP}/latest-pressure`); // Replace with your backend IP
+        if (response.data) {
+          setPressure(response.data.pressure_kpa);
+        } else {
+          setError('No pressure data found');
+        }
+      } catch (err) {
+        setError('Error fetching pressure data');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    // Fetch data initially and set interval for updates
+    fetchPressure();
+    const intervalId = setInterval(fetchPressure, 1000); // Update every 3 seconds
+
+    // Clear interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
+  return (
+    <ImageBackground source={require('../images/backgroundHome.png')} style={styles.backgroundContainer}>
+      <SafeAreaView>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.logoHeader}>
+            <Image style={styles.logo} source={require('../images/logo.png')} />
+            <View>
+              <Text style={styles.headerText}>GLAFS</Text>
+              <Text style={styles.headerText2}>Gas Leak and Fire Detection System</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Greeting */}
+        <View style={styles.body}>
+          <View style={styles.greeting}>
+            <Text style={styles.greetingText1}>Good {timeOfDay}, </Text>
+            <Text style={styles.greetingText2}>{userData.username}</Text>
+          </View>
+          <View style={styles.weatherView}>
+            <Image style={styles.weatherLogo} source={require('../images/Weather_Sunny.png')} />
+          </View>
+          <View style={styles.menuBar}>
+            <View style={styles.section1}>
+              <View style={styles.gasPercentage}>
+                <Image style={styles.gasIcon} source={require('../images/GasIcon.png')} />
+                <Text style={styles.gasPercentageText1}>Gas Pressure</Text>
+                <Text style={styles.gasPercentageText1}>KPA</Text>
+                <Text style={styles.gasPercentageText2}>{pressure}</Text>
+              </View>
+              <View style={styles.valveOptions}>
+                <View style={styles.valveStatus}>
+                  <Switch
+                    trackColor={{ false: "#767577", true: "#81b0ff" }}
+                    thumbColor={isServoOn ? "#f5dd4b" : "#f4f3f4"}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={handleToggle}
+                    style={styles.valveStatusSwitch}
+                    value={isServoOn}
+                  />
+                  <Text style={styles.valveStatusText}>Valve</Text>
+                  <Text style={styles.valveStatusText}>Status</Text>
+                </View>
+                {/* <TouchableOpacity onPress={() => {}}>
+                  <View style={styles.valveTimer}>
+                    <Ionicons name="time-outline" style={styles.valveTimerIcon} color="black" />
+                    <Text style={styles.valveTimerText}>Valve</Text>
+                    <Text style={styles.valveTimerText}>Timer</Text>
+                  </View>
+                </TouchableOpacity> */}
+              </View>
+            </View>
+          </View>
+        </View>
+      </SafeAreaView>
     </ImageBackground>
   );
 }
+
 const styles = StyleSheet.create({
   backgroundContainer: {
     flex: 1,
@@ -145,155 +167,146 @@ const styles = StyleSheet.create({
   header: {
     height: hp('23%'),
     width: wp('100%'),
-
-  },  
+  },
   body: {
     height: hp('77%'),
     width: wp('100%'),
     backgroundColor: '#F8F8FF',
     borderTopRightRadius: 60,
-    
   },
-  logo:{
-    height: 65,
-    width: 65,
-    marginTop: 45,
-    marginLeft: 15,
-    borderRadius: 60,
-    resizeMode: "cover",
+  logo: {
+    height: wp('15%'),
+    width: wp('15%'),
+    marginTop: hp('5%'),
+    marginLeft: wp('4%'),
+    borderRadius: wp('7.5%'),
+    resizeMode: 'cover',
   },
-  logoHeader:{
+  logoHeader: {
     flexDirection: 'row',
   },
-  headerText:{
+  headerText: {
     color: 'white',
-    marginTop: 55,
-    marginLeft: 15,
+    marginTop: hp('6%'),
+    marginLeft: wp('4%'),
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: wp('5%'),
   },
-  headerText2:{
+  headerText2: {
     color: 'white',
-    marginLeft: 15,
+    marginLeft: wp('4%'),
     fontWeight: '600',
-    fontSize: 15,
+    fontSize: wp('4%'),
   },
-  greeting:{
+  greeting: {
     flexDirection: 'column',
   },
-  weatherView:{
-    flexDirection: 'row-reverse',
-  },
-  greetingText1:{
-    fontSize: 20,
+  greetingText1: {
+    fontSize: wp('6%'),
     fontWeight: '700',
     color: '#0c2d48',
-    marginLeft: 20,
-    marginTop: 50,
+    marginLeft: wp('5%'),
+    marginTop: hp('5%'),
   },
-  greetingText2:{
-    fontSize: 20,
+  greetingText2: {
+    fontSize: wp('6%'),
     fontWeight: '900',
     color: '#0c2d48',
-    marginLeft: 20,
+    marginLeft: wp('5%'),
   },
-  weatherLogo:{
-    marginTop: -80,
-    marginRight: 15,
+  weatherView: {
+    flexDirection: 'row-reverse',
   },
-  menuBar:{
+  weatherLogo: {
+    marginTop: hp('-8%'),
+    marginRight: wp('5%'),
+  },
+  menuBar: {
     flexDirection: 'row',
-    height: 500,
+    height: hp('50%'),
     display: 'flex',
   },
-  section1:{
+  section1: {
     width: wp('100%'),
     height: hp('60%'),
     flexDirection: 'row',
     backgroundColor: '#F8F8FF',
-    justifyContent:'center',
-    alignItems:'center'
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  gasPercentage:{
-    width: 175,
-    height: 300,
-    display: 'flex',
+  gasPercentage: {
+    width: wp('40%'),
+    height: hp('45%'),
     backgroundColor: 'white',
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 150,
+    marginBottom: hp('10%'),
   },
-  gasIcon:{
-    marginTop: 30,
-    marginBottom: 10,
+  gasIcon: {
+    marginTop: hp('2%'),
+    marginBottom: hp('2%'),
   },
-  gasPercentageText1:{
-    fontSize: 25,
+  gasPercentageText1: {
+    fontSize: wp('5%'),
     fontWeight: '600',
     color: '#0c2d48',
   },
-  gasPercentageText2:{
-    fontSize: 50,
+  gasPercentageText2: {
+    fontSize: wp('10%'),
     fontWeight: '700',
     color: '#146da0',
   },
-  valveOptions:{
-    width: 175,
-    height: 300,
+  valveOptions: {
+    width: wp('40%'),
+    height: hp('32%'),
     display: 'flex',
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 150,
+    marginBottom: hp('10%'),
   },
-  valveStatus:{
-    width: 150,
-    height: 140,
-    display: 'flex',
+  valveStatus: {
+    width: wp('35%'),
+    height: hp('21.5%'),
     backgroundColor: 'white',
-    marginLeft: 15,
-    marginBottom: 15,
-    borderRadius: 10,
-  
-  },
-  valveTimer:{
-    width: 150,
-    height: 140,
-    display: 'flex',
-    backgroundColor: 'white',
-    marginLeft: 15,
+    marginLeft: wp('4%'),
+    marginBottom: hp('3%'),
     borderRadius: 10,
   },
-  valveStatusText:{
-    fontSize: 20,
+  valveTimer: {
+    width: wp('35%'),
+    height: hp('20%'),
+    backgroundColor: 'white',
+    marginLeft: wp('4%'),
+    borderRadius: 10,
+  },
+  valveStatusText: {
+    fontSize: wp('5%'),
     fontWeight: '700',
     color: '#0c2d48',
-    marginLeft: 10,
+    marginLeft: wp('3%'),
   },
-  valveStatusSwitch:{
+  valveStatusSwitch: {
     transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }],
-    marginEnd: 30,
-    marginBottom: 35,
+    marginTop: wp('5%'),
+    marginEnd: wp('5%'),
+    marginBottom: wp('5%'),
   },
-  valveTimerIcon:{
-    fontSize: 30,
+  valveTimerIcon: {
+    fontSize: wp('8%'),
     textAlign: 'right',
-    marginEnd: 10,
-    marginTop: 10,
-    marginBottom: 35,
+    marginEnd: wp('3%'),
+    marginTop: hp('2%'),
+    marginBottom: hp('3%'),
   },
-  valveTimerText:{
-    fontSize: 20,
+  valveTimerText: {
+    fontSize: wp('5%'),
     fontWeight: '700',
     color: '#0c2d48',
-    marginLeft: 10,
+    marginLeft: wp('3%'),
     textAlign: 'left',
-  }
+  },
 });
-  
-  
-
-
 
 export default HomePage;

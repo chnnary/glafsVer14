@@ -1,103 +1,102 @@
 import { StyleSheet } from "react-native";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-const styles=StyleSheet.create({
-  //Register and Login
+const styles = StyleSheet.create({
+  // Register and Login
   backgroundContainer: {
     flex: 1,
     width: null,
     height: null,
   },
-  centerContainer:{
-      justifyContent: 'center',
-      alignItems: 'center',
+  centerContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  logo:{
-      height: 100,
-      width: 100,
-      marginTop: 100,
-      marginBottom: 65,
-      borderRadius: 60,
-      resizeMode: "cover",
+  logo: {
+    height: hp('12%'), // Responsive height
+    width: wp('25%'), // Responsive width
+    marginTop: hp('10%'), // Responsive margin
+    marginBottom: hp('8%'), // Responsive margin
+    borderRadius: 60,
+    resizeMode: "cover",
   },
-  textBox:{
-      flexDirection: 'row',
-      paddingTop: 5,
-      paddingBottom: 5,
-      marginTop: 30,
-      marginLeft: 30,
-      marginRight: 30,
-      paddingHorizontal: 15,
-      borderWidth: 1,
-      borderColor: '#FFFFFF',
-      borderRadius: 5,
+  textBox: {
+    flexDirection: 'row',
+    paddingTop: hp('1%'), // Responsive padding
+    paddingBottom: hp('1%'), // Responsive padding
+    marginTop: hp('4%'), // Responsive margin
+    marginLeft: wp('8%'), // Responsive margin
+    marginRight: wp('8%'), // Responsive margin
+    paddingHorizontal: wp('4%'), // Responsive padding
+    borderWidth: 1,
+    borderColor: '#FFFFFF',
+    borderRadius: 5,
   },
-  userIcon:{
-    marginTop: 10,
-    marginRight: 10,
-    fontSize: 27,
+  userIcon: {
+    marginTop: hp('2.5%'), // Responsive margin
+    marginRight: wp('2%'), // Responsive margin
+    fontSize: wp('7%'), // Responsive font size
   },
-  userText:{
+  userText: {
     flex: 1,
-    fontSize: 18,
+    fontSize: wp('5%'), // Responsive font size
     margin: 10,
     color: 'white',
   },
   button: {
     alignItems: 'center',
-    marginTop: 40,
-    alignItems: 'center',
+    marginTop: hp('5%'), // Responsive margin
     textAlign: 'center',
     margin: 1,
   },
   inBut: {
-    width: '85%',
+    width: wp('85%'), // Responsive width
     backgroundColor: 'white',
     alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
+    paddingHorizontal: wp('4%'), // Responsive padding
+    paddingVertical: hp('2%'), // Responsive padding
     borderRadius: 5,
   },
   loginText: {
-    fontSize: 18,
+    fontSize: wp('5%'), // Responsive font size
     fontWeight: 'bold',
     color: '#0c2d48',
   },
-  bottomtextColumn:{
+  bottomtextColumn: {
     flexDirection: 'row',
-    marginTop: 150,
+    marginTop: hp('20%'), // Responsive margin
   },
-  bottomText:{
+  bottomText: {
     color: 'white',
   },
-  bottomtextBold:{
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  headerText:{
-    fontSize: 40,
+  bottomtextBold: {
     color: 'white',
     fontWeight: 'bold',
-    marginLeft:10,
   },
-  headerView:{
+  headerText: {
+    fontSize: wp('10%'), // Responsive font size
+    color: 'white',
+    fontWeight: 'bold',
+    marginLeft: wp('2%'), // Responsive margin
+  },
+  headerView: {
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    marginTop: 80,
-    marginLeft: 20,
+    marginTop: hp('8%'), // Responsive margin
+    marginLeft: wp('5%'), // Responsive margin
   },
-  signupText:{
-    margin: 70, 
+  signupText: {
+    margin: hp('10%'), // Responsive margin
     flexDirection: 'row'
   },
-  logsHeader:{
+  logsHeader: {
     backgroundColor: '#0c2d48',
-
   },
-  logsheaderText:{
+  logsheaderText: {
     color: 'white',
   },
   
   // HomePage
-  
-})
+});
+
 export default styles;
