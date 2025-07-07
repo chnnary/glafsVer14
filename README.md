@@ -24,7 +24,7 @@
 ---
 ## 📸 Screenshots
 
-| Home Screen | Event Log | Login |
+| Home | Event Log | Login |
 |-------------|------------------|-----------|
 | ![](screenshots/HomePage.jpg) | ![](screenshots/Logs.jpg) | ![](screenshots/Login.jpg) |
 
