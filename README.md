@@ -24,9 +24,9 @@
 ---
 ## 📸 Screenshots
 
-| Home Screen | Login | Event Log |
+| Home Screen | Event Log | Login |
 |-------------|------------------|-----------|
-| ![](screenshots/HomePage.jpg) | ![](screenshots/Login.jpg) | ![](screenshots/Logs.jpg) |
+| ![](screenshots/HomePage.jpg) | ![](screenshots/Logs.jpg) | ![](screenshots/Login.jpg) |
 
 | Forgot Password | Verify | Register |
 |----------------|----------------|--------|
