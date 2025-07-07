@@ -1,4 +1,4 @@
-# 🔥 GLAFS – Gas Leak Alarm and Fire Safety
+# 🔥 GLAFS – Gas Leak Alarm and Fire System
 
 **GLAFS** (Gas Leak Alarm and Fire Safety) is a **mobile and web-integrated application** designed to **detect**, **log**, and **respond** to gas leaks and fire hazards in real-time. It also allows **remote control of LPG valves**, enhancing home and workplace safety.
 
