@@ -22,3 +22,12 @@
   Intuitive mobile UI designed for quick actions during emergencies.
 
 ---
+## 📸 Screenshots
+
+| Home Screen | Login | Event Log |
+|-------------|------------------|-----------|
+| ![](screenshots/HomePage.jpg) | ![](screenshots/Login.jpg) | ![](screenshots/Logs.jpg) |
+
+| Forgot Password | Verify | Register |
+|----------------|----------------|--------|
+| ![](screenshots/Forgot-Password.jpg) | ![](screenshots/Verify.jpg) | ![](screenshots/Register.jpg) |
